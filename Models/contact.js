@@ -7,7 +7,7 @@ const ContactSchema = new Schema({
     EmailAddress: String,
     ContactNumber: String
 }, {
-    collection: "contatcs"
+    collection: "contacts"
 });
 let model = mongoose.model('Contact', ContactSchema);
 module.exports.Model = model;
