@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 let router = express.Router();
+const Contact = require('../Models/contact').Model;
 router.get('/', function (req, res, next) {
     res.render('index', { title: 'Home', page: 'home', user: '' });
 });
@@ -30,7 +31,14 @@ router.get('/logout', function (req, res, next) {
     res.render('index', { title: 'Logout', page: 'logout', user: '' });
 });
 router.get('/contact-list', function (req, res, next) {
-    res.render('index', { title: 'Contact List', page: 'contact-list', user: 'admin' });
+    Contact.find({}, (err, contacts) => {
+        if (err) {
+            return next(err);
+        }
+        else {
+            res.status(200).json(contacts);
+        }
+    });
 });
 router.get('/edit', function (req, res, next) {
     res.render('index', { title: 'Add', page: 'edit', user: 'admin' });

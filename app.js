@@ -5,6 +5,14 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const mongoose = require("mongoose");
+const config = require('./Config/db');
+mongoose.connect(config.DB, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('connected', function () {
+    console.log(`Connected to MongoDB at ${config.DB}`);
+});
 let indexRouter = require('./Routes/index');
 const app = express();
 app.set('views', path.join(__dirname, 'Views'));

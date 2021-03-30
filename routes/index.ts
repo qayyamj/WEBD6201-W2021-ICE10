@@ -1,6 +1,10 @@
 import express = require('express');
 let router = express.Router();
 
+import mongoose = require('mongoose');
+
+const Contact = require('../Models/contact').Model;
+
 /* GET home page - default route. */
 router.get('/', function(req, res, next) 
 {
@@ -60,7 +64,20 @@ router.get('/logout', function(req, res, next)
 /* GET contact list page - contact-list route. */
 router.get('/contact-list', function(req, res, next) 
 {
-  res.render('index', { title: 'Contact List', page: 'contact-list', user: 'admin'  });
+  //res.render('index', { title: 'Contact List', page: 'contact-list', user: 'admin'  });
+
+  Contact.find({}, (err:Error, contacts:string) =>
+  {
+    if (err)
+    {
+      return next(err);
+    }
+    else
+    {
+      res.status(200).json(contacts);
+    }
+  });
+
 });
 
 /* GET edit list page - edit route. */
