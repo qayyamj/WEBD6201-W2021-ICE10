@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const appConfig = require('./app');
+const appConfig = require("./app");
 let debug = require('debug')('week10a:server');
-const http_1 = __importDefault(require("http"));
+let http = require('http');
 let port = normalizePort(process.env.PORT || '3000');
 appConfig.app.set('port', port);
-let server = http_1.default.createServer(appConfig);
+let server = http.createServer(appConfig.app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

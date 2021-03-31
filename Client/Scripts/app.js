@@ -1,7 +1,6 @@
 "use strict";
 var core;
 (function (core) {
-    let linkData;
     function testFullName() {
         let messageArea = $("#messageArea").hide();
         let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
@@ -68,7 +67,7 @@ var core;
         $("a.delete").on("click", function (event) {
             if (!confirm("Are you sure?")) {
                 event.preventDefault();
-                location.href = "/contact-list";
+                location.href = '/contact-list';
             }
         });
     }
@@ -94,7 +93,7 @@ var core;
                 if (success) {
                     sessionStorage.setItem("user", newUser.serialize());
                     messageArea.removeAttr("class").hide();
-                    location.href = '/contact-list';
+                    $("form").trigger("submit");
                 }
                 else {
                     username.trigger("focus").trigger("select");
@@ -107,14 +106,16 @@ var core;
             location.href = '/home';
         });
     }
+    function performLogout() {
+        sessionStorage.clear();
+        location.href = '/login';
+    }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
             location.href = '/login';
         }
     }
-    function performLogout() {
-        sessionStorage.clear();
-        location.href = "/login";
+    function display404() {
     }
     function Start() {
         let pageID = $("body")[0].getAttribute("id");
@@ -125,14 +126,15 @@ var core;
             case 'contact':
                 displayContact();
                 break;
-            case 'contact-list':
-                displayContactList();
-                break;
             case 'login':
                 displayLogin();
                 break;
             case 'logout':
                 performLogout();
+            case 'register':
+                break;
+            case 'contact-list':
+                displayContactList();
                 break;
         }
     }

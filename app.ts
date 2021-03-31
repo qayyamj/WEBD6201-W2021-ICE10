@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import DBConfig = require('./Config/db');
 
 mongoose.connect(DBConfig.Path, {useNewUrlParser: true, useUnifiedTopology: true});
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('connected', function()

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
  import createError from 'http-errors';
- const appConfig = require('./app');
+ import appConfig = require('./app');
  let debug = require('debug')('week10a:server');
- import http from 'http';
+ let http = require('http');
  
  /**
   * Get port from environment and store in Express.
@@ -19,7 +18,7 @@
   * Create HTTP server.
   */
  
- let server = http.createServer(appConfig);
+ let server = http.createServer(appConfig.app);
  
  /**
   * Listen on provided port, on all network interfaces.

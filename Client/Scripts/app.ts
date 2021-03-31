@@ -1,8 +1,8 @@
 
 namespace core
 {
-    let linkData: string;
-
+  
+    
     function testFullName(): void
     {
       let messageArea = $("#messageArea").hide();
@@ -92,42 +92,37 @@ namespace core
             }
           }
 
-          // reload contact page
-          location.href ='/contact';
+          location.href = '/contact';
+          //loadLink("contact"); // reload contact page
         });
     }
 
     function displayContactList() :void
     {
       // don't allow visitors to go here
+
       authGuard();
 
       $("a.delete").on("click", function(event){
         if(!confirm("Are you sure?"))
         {
           event.preventDefault();
-         location.href = "/contact-list";
+          location.href = '/contact-list';
         }
       });
-/* 
-      if (localStorage.length > 0) 
+
+      /* if (localStorage.length > 0) 
       {
-
         let contactList = document.getElementById("contactList");
-
         let data = "";
-
         let keys = Object.keys(localStorage);
          
         let index = 1;
-
         for (const key of keys) 
         {
           let contactData = localStorage.getItem(key);
-
           let contact = new core.Contact();
           contact.deserialize(contactData);
-
           data += `<tr>
           <th scope="row" class="text-center">${index}</th>
           <td>${contact.FullName}</td>
@@ -136,36 +131,35 @@ namespace core
           <td class="text-center"><button value="${key}" class="btn btn-primary btn-sm edit"><i class="fas fa-edit fa-sm"></i> Edit</button></td>
           <td class="text-center"><button value="${key}" class="btn btn-danger btn-sm delete"><i class="fas fa-trash-alt fa-sm"></i> Delete</button></td>
           </tr>`;
-
           index++;
         }
-
         contactList.innerHTML = data;
-
         $("button.edit").on("click", function(){
-          location.href = '/edit/' + $(this).val().toString();
+          //loadLink("edit", $(this).val().toString());
+          location.href = '/edit';
          });
-
-        
-         
+         $("button.delete").on("click", function(){
+           if(confirm("Are you sure?"))
+           {
+            localStorage.removeItem($(this).val().toString());
+           }
+           //loadLink("contact-list"); 
            // refresh the page
            location.href = '/contact-list';
-         }); 
-
-         $("#addButton").on("click", function() 
-         {
-           location.href = '/edit';
-         }); */
+         });
       }
-
-
-    
+      $("#addButton").on("click", function() 
+      {
+      //loadLink("edit");
+      location.href = '/edit';
+      }); */
+    }
 
     function displayEdit(): void
     {
       // form validation
-      formValidation(); 
-    }
+      formValidation();
+    } 
 
     function displayLogin():void
     {
@@ -203,7 +197,10 @@ namespace core
             messageArea.removeAttr("class").hide();
 
             // redirect user to secure area - contact-list.html
-            location.href = '/contact-list';
+            //loadLink("contact-list");
+            //location.href = '/contact-list';
+
+            $("form").trigger("submit");
           }
           else
           {
@@ -219,23 +216,27 @@ namespace core
         // clear the login form
         document.forms[0].reset();
         // return to the home page
+        //loadLink("home");
         location.href = '/home';
       });
+    }
+
+    function performLogout():void
+    {
+        sessionStorage.clear();
+        location.href = '/login';
     }
 
     /* function toggleLogin(): void
     {
       let contactListLink = $("#contactListLink")[0]; // makes a reference to the contact-list link
-
       // if user is logged in
       if(sessionStorage.getItem("user"))
       { //Logged in -----------------------
-
         // swap out the login link for logout
         $("#loginListItem").html(
         `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`
         );
-
         if(!contactListLink) // checks if contact-list link is not already present
         {
           // add contact-list link
@@ -246,7 +247,6 @@ namespace core
       }
       else
       { // Logged out-----------------------
-
         // swap out the login link for logout
         $("#loginListItem").html(
           `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
@@ -257,11 +257,9 @@ namespace core
           // remove contact-list link
           $("#contactListLink").remove();
         }
-
       }
-
-      addLinkEvents();
-      highlightActiveLink(clientRouter.ActiveLink);
+      //addLinkEvents();
+      //highlightActiveLink(router.ActiveLink);
     } */
 
     function authGuard():void
@@ -274,38 +272,39 @@ namespace core
       }
     }
 
-    function performLogout():void
+    function display404():void
     {
-      sessionStorage.clear();
-      location.href = "/login";
+
     }
 
-    /**
+      /**
      * This is the entry point for our program
      *
      */
     function Start(): void
     {
-        let pageID = $("body")[0].getAttribute("id");
 
-        switch(pageID)
-        {
-          case 'edit':
-            displayEdit();
-            break;
-          case 'contact':
-            displayContact();
-            break;
-          case 'contact-list':
-            displayContactList();
-            break;
-          case 'login':
-            displayLogin();
-            break;
-          case 'logout':
-            performLogout();
-            break;
-        }
+        let pageID = $("body")[0].getAttribute("id");
+        
+      switch (pageID) 
+      {
+        case 'edit':
+          displayEdit();
+          break;
+        case 'contact':
+          displayContact();
+          break;
+        case 'login':
+          displayLogin();
+          break;
+        case 'logout':
+          performLogout();
+        case 'register':
+          break;
+        case 'contact-list':
+          displayContactList();
+          break;
+      }
     }
 
     window.addEventListener("load", Start);
