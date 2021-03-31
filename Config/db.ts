@@ -1,5 +1,2 @@
-let dbPath = "mongodb://localhost/webd6201";
-let sessionSecret = "someSecret";
-
-module.exports.DB = dbPath;
-module.exports.secret = sessionSecret;
+export const Path = "mongodb://localhost/webd6201";
+export const Secret = "someSecret";

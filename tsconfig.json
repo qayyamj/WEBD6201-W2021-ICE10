@@ -1,11 +1,13 @@
 {
     "compilerOptions": 
     {
-        "target": "ES2015",
+        "target": "ES6",
         "module": "CommonJS",
         "sourceMap": true,
         "noImplicitAny": true,
         "alwaysStrict": true,
-        "removeComments": true
+        "removeComments": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true
     }
 }

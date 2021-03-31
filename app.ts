@@ -1,25 +1,25 @@
 // importing 3rd party modules
-import createError = require('http-errors');
-import express = require('express');
-import path = require('path');
-import cookieParser = require('cookie-parser');
-import logger = require('morgan');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 
 // import module for db
-import mongoose = require('mongoose');
-const config = require('./Config/db');
+import mongoose from 'mongoose';
+import DBConfig = require('./Config/db');
 
-mongoose.connect(config.DB, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(DBConfig.Path, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('connected', function()
 {
-  console.log(`Connected to MongoDB at ${config.DB}`);
+  console.log(`Connected to MongoDB at ${DBConfig.Path}`);
 });
 
 // configuration
 let indexRouter = require('./Routes/index');
-const app = express();
+export const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'Views'));
@@ -50,4 +50,3 @@ app.use(function(err:createError.HttpError, req:express.Request, res:express.Res
   res.render('error', { message: message, error: error, tile: 'ERROR', page: 'error' });
 });
 
-module.exports = app;

@@ -1,9 +1,10 @@
-import express = require('express');
-let router = express.Router();
+import express from 'express';
+export const router = express.Router();
 
-import mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const Contact = require('../Models/contact').Model;
+import ContactModel = require('../Models/contact');
+const Contact = ContactModel.Model;
 
 /* GET home page - default route. */
 router.get('/', function(req, res, next) 
@@ -42,9 +43,9 @@ router.get('/contact', function(req, res, next)
 });
 
 /* GET login page - login route. */
-router.get('/login', function(req, res, next) 
+router.post('/login', function(req, res, next) 
 {
-  res.render('index', { title: 'Login', page: 'login', user: ''         });
+  res.redirect('/contact-list');
 });
 
 /* GET register page - register route. */
@@ -66,7 +67,7 @@ router.get('/contact-list', function(req, res, next)
 {
   //res.render('index', { title: 'Contact List', page: 'contact-list', user: 'admin'  });
 
-  Contact.find({}, (err:Error, contacts:string) =>
+  Contact.find({}, (err, contacts:mongoose.Document) =>
   {
     if (err)
     {
@@ -74,24 +75,93 @@ router.get('/contact-list', function(req, res, next)
     }
     else
     {
-      res.status(200).json(contacts);
+      res.render('index', {title: 'Contact List', page: 'contact-list', contacts: contacts, user: 'temp'});
     }
   });
 
 });
 
-/* GET edit list page - edit route. */
-router.get('/edit', function(req, res, next) 
-{
-  res.render('index', { title: 'Add', page: 'edit', user: 'admin'    });
-});
-
+/* Display edit list page with /edit/:id. */
 router.get('/edit/:id', function(req, res, next) 
 {
-  let id = req.params.id;
-  res.render('edit', { title: 'Edit', page: 'edit', contactID: id, user: 'admin'    });
+ let id = req.params.id;
+
+ //pass the id to the database
+Contact.findById(id, (err:any, contactToEdit:mongoose.Document) =>
+  {
+  if(err)
+  {
+    console.error(err);
+    res.end(err);
+  }
+
+  // show the edit view
+  res.render('index', { title: 'Edit', page: 'edit', data: contactToEdit, user: 'temp'    });
+  }); 
 });
 
+/* Process edit list page with /edit/:id. */
+router.post('/edit/:id', function(req, res, next) 
+{
+  let id = req.params.id;
 
+  // instantiate new object of type Contact
+  let updatedContact = new Contact
+  ({
+    "_id": id,
+    "FullName": req.body.fullName,
+    "ContactNumber": req.body.contactNumber,
+    "EmailAddress": req.body.emailAddress
+  });
 
-module.exports = router;
+Contact.updateOne({_id: id}, updatedContact, {}, function(err){
+  if(err)
+  {
+    console.error(err);
+    res.end(err);
+  }
+  res.redirect('/contact-list');
+});
+});
+
+/* Display add list page - with /add. */
+router.get('/add', function(req, res, next) 
+{
+  res.render('index', { title: 'Add', page: 'edit', data: '', user: 'temp'    });
+});
+
+/* Process add list page - with /add. */
+router.post('/add', function(req, res, next) 
+{
+  let newContact = new Contact
+  ({
+    "FullName": req.body.fullName,
+    "ContactNumber": req.body.contactNumber,
+    "EmailAddress": req.body.emailAddress
+  });
+
+  Contact.create(newContact, (err) => {
+    if(err)
+    {
+      console.error(err);
+      res.end(err);
+    }
+    res.redirect('/contact-list');
+  })
+});
+
+/* Display delete page - delete route. */
+router.get('/delete/:id', function(req, res, next) 
+{
+  let id = req.params.id;
+
+  Contact.remove({_id: id}, (err) => {
+    if(err)
+    {
+      console.error(err);
+      res.end(err);
+    }
+    res.redirect('/contact-list');
+  })
+});
+
